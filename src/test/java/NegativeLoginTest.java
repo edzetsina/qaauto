@@ -1,4 +1,3 @@
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -11,6 +10,8 @@ public class NegativeLoginTest {
         WebDriver webDriver = new FirefoxDriver();
         webDriver.navigate().to( "https://alerts.shotspotter.biz");
         sleep(5000);
+       /* webDriver.findElement(By.xpath("//input[@type='email']")).sendKeys("denvert1@shotspotter.net");*/
+       /* webDriver.findElement(By.xpath("//input[@type='password']")).sendKeys("Test1"); */
         webDriver.findElement(By.xpath("//*[@class='button' and text()='GO']")).click();
         sleep(5000);
         Assert.assertTrue(webDriver.findElement(By.xpath("//*[@class='invalid-credentials']")).isDisplayed());
