@@ -16,8 +16,10 @@ public class LoginTest {
     @BeforeMethod
     public void beforeMethod() throws InterruptedException {
         webDriver = new FirefoxDriver();
+        LoginPage.webDriver = webDriver;
         webDriver.navigate().to( "https://alerts.shotspotter.biz");
         sleep(5000);
+        LoginPage.init();
     }
 
 
