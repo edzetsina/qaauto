@@ -3,23 +3,26 @@ package page;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
-public class MainPage {
-    private WebDriver webDriver;
-    private WebElement settingIcon;
+public class MainPage extends BasePage {
 
-    private void InitMainPageWebElements() {
-        settingIcon = webDriver.findElement(By.className("settings"));
+   @FindBy(className = "settings")
+   private WebElement settingIcon;
+
+       public MainPage(WebDriver webDriver) {
+           super(webDriver);
+           PageFactory.initElements(webDriver, this);
     }
-
-    public MainPage(WebDriver webDriver) {
-        this.webDriver = webDriver;
-        InitMainPageWebElements();
-
-    }
-
 
     public boolean isPageLoaded() {
-        return settingIcon.isDisplayed();
+
+           return settingIcon.isDisplayed();
     }
+
+
 }
+
+
