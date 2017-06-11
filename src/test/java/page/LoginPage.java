@@ -22,39 +22,23 @@ public class LoginPage extends BasePage {
 
     public LoginPage(WebDriver webDriver) {
         super(webDriver);
-        webDriver.navigate().to( "https://alerts.shotspotter.biz");
         PageFactory.initElements(webDriver, this);
         waitUntilElementDisplayed(goButton, 20);
     }
 
-    public <T> T login(String userEmail, String userPassword){
+    public <T> T login(String userEmail, String userPassword) {
         emailField.sendKeys(userEmail);
         passwordField.sendKeys(userPassword);
         goButton.click();
-        if (isElementExist(goButton)) {
-            return (T) PageFactory.initElements(webDriver, LoginPage.class);
+
+        if (isElementDisplayed(goButton, 3)) {
+            return (T) this;
         }
         else {
+
             return (T) PageFactory.initElements(webDriver, MainPage.class);
         }
-
     }
-
- /*  public MainPage loginAs(String userEmail, String userPassword) {
-        emailField.sendKeys(userEmail);
-        passwordField.sendKeys(userPassword);
-        goButton.click();
-        return new MainPage(webDriver);
-    }
-
-  public LoginPage loginAsReturnToLogin(String userEmail, String userPassword) {
-       emailField.sendKeys(userEmail);
-       passwordField.sendKeys(userPassword);
-       goButton.click();
-       waitUntilElementDisplayed(goButton, 20);
-       return this;
-   }  */
-
     public boolean isInvalidCredentialMsg() {
         return invalidCredentialsErrorMsg.isDisplayed();
     }

@@ -1,7 +1,7 @@
 package page;
 
 
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -25,19 +25,30 @@ public class BasePage {
         return webDriver.getTitle();
     }
 
-    public boolean isElementExist(WebElement element) {
+    public boolean isElementDisplayed(WebElement element, int timeout){
         try {
-            element.isDisplayed();
+            waitUntilElementDisplayed(element).isDisplayed();
         }
-        catch (NoSuchElementException e) {
+        catch (TimeoutException e){
             return false;
         }
         return true;
+
     }
 
     public WebElement waitUntilElementDisplayed(WebElement element, int timeout) {
         WebDriverWait wait = new WebDriverWait(webDriver, timeout);
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
+    public WebElement  waitUntilElementDisplayed(WebElement element) {
+        return waitUntilElementDisplayed(element, 10);
+    }
+   /* public WebElement waitUntilElementLoad(WebElement element, int timeout) {
+        WebDriverWait wait = new WebDriverWait(webDriver, timeout);
+        return wait.until(ExpectedConditions.or(ExpectedConditions.visibilityOf(element));
+       // wait.until(ExpectedConditions.visibilityOf(element));
+    }*/
+
+
 }
 
