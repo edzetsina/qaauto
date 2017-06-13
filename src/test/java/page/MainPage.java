@@ -14,6 +14,8 @@ public class MainPage extends BasePage {
    private WebElement settingIcon;
    @FindBy(xpath = "//settings-drop-down//li[text()='Logout']")
    private WebElement logOutButton;
+   @FindBy(className = "drop-down-menu animated short fade-in-down")
+   private WebElement settingsDropdownList;
 
        public MainPage(WebDriver webDriver) {
            super(webDriver);
@@ -22,7 +24,6 @@ public class MainPage extends BasePage {
     }
     public LoginPage logOut() {
         settingIcon.click();
-
         waitUntilElementLoad(logOutButton, 5).click();
         return PageFactory.initElements(webDriver, LoginPage.class);
     }
