@@ -12,10 +12,11 @@ public class MainPage extends BasePage {
 
    @FindBy(className = "settings")
    private WebElement settingIcon;
-   @FindBy(xpath = "//settings-drop-down//li[text()='Logout']")
-   private WebElement logOutButton;
-   @FindBy(className = "drop-down-menu animated short fade-in-down")
-   private WebElement settingsDropdownList;
+   @FindBy(xpath = "//div[@class='settings isOpen']")
+   private WebElement settingsMenu;
+   @FindBy(xpath = "//li[text()='Logout']")
+   private WebElement logOutMenuItem;
+
 
        public MainPage(WebDriver webDriver) {
            super(webDriver);
@@ -24,7 +25,8 @@ public class MainPage extends BasePage {
     }
     public LoginPage logOut() {
         settingIcon.click();
-        waitUntilElementLoad(logOutButton, 5).click();
+        waitUntilElementDisplayed(settingsMenu);
+        waitUntilElementClickable(logOutMenuItem, 5).click();
         return PageFactory.initElements(webDriver, LoginPage.class);
     }
 
