@@ -6,6 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.List;
+
 import static java.lang.Thread.sleep;
 
 /**
@@ -28,6 +30,27 @@ public class MainPage extends BasePage {
      */
     @FindBy(xpath = "//li[text()='Logout']")
     private WebElement logOutMenuItem;
+
+    @FindBy(xpath = "//filter-menu//div[@class='selected-option']")
+    private WebElement incidentsTimeSwitch;
+    @FindBy(xpath = "//filter-menu//div[@class='available-options']//*[@class='time-increment' and text()='24']")
+    private WebElement timeFrameSwitch24h;
+    @FindBy(xpath = "//filter-menu//div[@class='available-options']//*[@class='time-increment' and text()='3']")
+    private WebElement timeFrameSwitch3d;
+    @FindBy(xpath = "//filter-menu//div[@class='available-options']//*[@class='time-increment' and text()='7']")
+    private WebElement timeFrameSwitch7d;
+    @FindBy(xpath = "//*[@class='result-count']")
+    private WebElement resultsCount;
+    @FindBy(xpath = "//div//*[text()='List']")
+    private WebElement listButton;
+    @FindBy(xpath = "//incident-list//incident-card")
+    private List<WebElement> incidentsList;
+
+
+    public int getResultsCount() {
+       return Integer.parseInt(resultsCount.getText().replace(" Results", ""));
+    }
+
 
 
     /**
@@ -60,6 +83,15 @@ public class MainPage extends BasePage {
      */
     public boolean isPageLoaded() {
         return settingIcon.isDisplayed();
+    }
+
+
+    public void switchTimeFramePeriod(int i) {
+
+    }
+
+    public int getIncidentCardsCount() {
+
     }
 }
 
