@@ -3,16 +3,14 @@ package test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import page.LoginPage;
 import page.MainPage;
 
 public class MainPageTests {
 
     public WebDriver webDriver;
-
+    MainPage mainPage;
     public String username = "denvert1@shotspotter.net";
     /**
      * Password for password field
@@ -22,16 +20,19 @@ public class MainPageTests {
     /**
      * Opens FireFox browser and navigate to web page
      */
-    @BeforeMethod
-    public void beforeMethod() throws InterruptedException {
+    @BeforeClass
+    public void beforeClass() throws InterruptedException {
         webDriver = new FirefoxDriver();
         webDriver.navigate().to("https://alerts.shotspotter.biz");
+        LoginPage loginPage = new LoginPage(webDriver);
+        mainPage = loginPage.login(username, password);
+
     }
     /**
      * Kills WebDriver instance
      */
-    @AfterMethod
-    public void afterMethod() {
+    @AfterClass
+    public void afterClass() {
         webDriver.quit();
     }
 
@@ -39,17 +40,37 @@ public class MainPageTests {
      * Positive login test with correct credentials
      */
     @Test
-    public void testSwitchIncidentsPeriod() throws InterruptedException {
-        LoginPage loginPage = new LoginPage(webDriver);
-        MainPage mainPage = loginPage.login(username, password);
+    public void testSwitchIncidentsPeriod() {
 
-        mainPage.switchTimeFramePeriod(7);     //home work
-       int resultsCount = mainPage.getResultsCount();
-       int incidentCardsCount = mainPage.getIncidentCardsCount();   //home work
+        int[] timeFrameOptions = {24,3,7};
+        for(int timeFrameOption : timeFrameOptions){
+            mainPage.switchTimeFramePeriod(timeFrameOption);
+            int resultsCount = mainPage.getResultsCount();
+            int incidentCardsCount = mainPage.getIncidentCardsCount();
 
-       Assert.assertEquals(resultsCount, incidentCardsCount, "Results count doesn't match Incident Cards count");
+            System.out.println("Preriod: "+timeFrameOption);
+            System.out.println("resultsCount: "+resultsCount);
+            System.out.println("incidentCardsCount: "+incidentCardsCount);
+            Assert.assertEquals(resultsCount, incidentCardsCount, "Results count doesn't match Incident Cards count");
+        }
+    }
 
+    @DataProvider
+    public static Object[][] timeFrameOptions(){
+        return new Object[][]{ {24},{3},{7}};
+    }
 
+    @Test(dataProvider = "timeFrameOptions")
+        public void testSwitchIncidentsPeriodByDataProvider(int timeFrameOption) {
+        mainPage.switchTimeFramePeriod(timeFrameOption);
+        int resultsCount = mainPage.getResultsCount();
+        int incidentCardsCount = mainPage.getIncidentCardsCount();
+
+        System.out.println("Period: "+timeFrameOption);
+        System.out.println("resultsCount: "+resultsCount);
+        System.out.println("incidentCardsCount: "+incidentCardsCount);
+        Assert.assertEquals(resultsCount, incidentCardsCount, "Results count doesn't match Incident Cards count");
 
     }
+
 }
