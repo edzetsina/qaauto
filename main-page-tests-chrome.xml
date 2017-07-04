@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+        <suite name="MainPageTests" verbose="2" >
+        <test name="MainPageTestsChrome" >
+
+            <parameter name="browserName" value="chrome"/>
+            <classes>
+                <class name="test.MainPageTests" />
+            </classes>
+        </test>
+    </suite>

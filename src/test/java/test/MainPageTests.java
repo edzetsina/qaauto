@@ -26,7 +26,6 @@ public class MainPageTests {
         webDriver.navigate().to("https://alerts.shotspotter.biz");
         LoginPage loginPage = new LoginPage(webDriver);
         mainPage = loginPage.login(username, password);
-
     }
     /**
      * Kills WebDriver instance
@@ -70,7 +69,6 @@ public class MainPageTests {
         System.out.println("resultsCount: "+resultsCount);
         System.out.println("incidentCardsCount: "+incidentCardsCount);
         Assert.assertEquals(resultsCount, incidentCardsCount, "Results count doesn't match Incident Cards count");
-
     }
 
 }

@@ -6,6 +6,9 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import page.LoginPage;
 import page.MainPage;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 
 /**
@@ -15,6 +18,7 @@ public class LoginTest {
 
 
     public WebDriver webDriver;
+    LoginPage loginPage;
     /**
      * Username for login field
      */
@@ -28,16 +32,19 @@ public class LoginTest {
     /**
      * Opens FireFox browser and navigate to web page
      */
-    @BeforeMethod
-    public void beforeMethod() throws InterruptedException {
+    @BeforeClass
+    public void beforeClass() throws InterruptedException {
         webDriver = new FirefoxDriver();
         webDriver.navigate().to("https://alerts.shotspotter.biz");
+        LoginPage loginPage = new LoginPage(webDriver);
+
     }
+
     /**
      * Kills WebDriver instance
      */
-    @AfterMethod
-    public void afterMethod() {
+    @AfterClass
+    public void afterClass() {
         webDriver.quit();
     }
 
@@ -53,26 +60,40 @@ public class LoginTest {
         Assert.assertEquals(mainPage.getPageTitle(), "Shotspotter", "Main page title is wrong");
         Assert.assertTrue(mainPage.isPageLoaded(), "Setting icon is not displayed");
     }
+
+    @DataProvider
+    public static Object[][] negativeTestEnvironment() {
+        return new Object[][]{
+                {"", "", "The provided credentials are not correct."},
+                {" ", " ", "The provided credentials are not correct."},
+                {"sst.tau@gmail.com", "", "The provided credentials are not correct."},
+                {"sst.taugmail.com", "P@ssword123", "The provided credentials are not correct."},
+                {"sst.tau@ gmail.com", "P@ssword123", "The provided credentials are not correct."},
+                {"sst.tau@gmailcom", " P@Ssword123", "The provided credentials are not correct."},
+                {" sst.tau@gmail.com", "P@sSword123", "The provided credentials are not correct."},
+                {"192.168.1.1@gmail.com", "P@ssword123", "The provided credentials are not correct."},
+                {"@#$%^#/!><@gmail.com", "P@ssword123", "The provided credentials are not correct."}
+        };
+    }
+
     /**
      * Negative login test with wrong credentials
      */
-    @Test
-    public void testLoginNegative() throws InterruptedException {
-        String expectedErrorMsg = "The provided credentials are not correct.";
-        LoginPage loginPage = new LoginPage(webDriver);
+    @Test(dataProvider = "negativeTestEnvironment")
+    public void testLoginNegative(String username, String password, String expectedErrorMsg) throws InterruptedException {
         Assert.assertEquals(loginPage.getPageTitle(), "Shotspotter - Login", "Main page title is wrong");
         Assert.assertEquals(loginPage.getPageURL(), "https://alerts.shotspotter.biz/", "Wrong URL on Login Page");
-        loginPage = loginPage.login(username, "Test");
+        loginPage = loginPage.login(username, password);
         Assert.assertTrue(loginPage.isPageLoaded(), "Login page is not loaded");
         Assert.assertTrue(loginPage.isInvalidCredentialMsg(), "Error message was not displayed on login page");
         Assert.assertEquals(loginPage.getErrorMsgText(), expectedErrorMsg, "Error msg has wrong test");
     }
+
     /**
      * Logout test
      */
     @Test
     public void testLogOut() {
-        LoginPage loginPage = new LoginPage(webDriver);
         Assert.assertEquals(loginPage.getPageTitle(), "Shotspotter - Login", "Main page title is wrong");
         Assert.assertEquals(loginPage.getPageURL(), "https://alerts.shotspotter.biz/", "Wrong URL on Login Page");
         MainPage mainPage = loginPage.login(username, password);
