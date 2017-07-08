@@ -78,7 +78,6 @@ public class LoginTest {
                 {"st.tau@gmail.com", "", "The provided credentials are not correct."},
                 {"sst.taugmail.com", "P@ssword123", "The provided credentials are not correct."},
                 {"sst.tau@ gmail.com", "P@ssword123", "The provided credentials are not correct."},
-                {" sst.tau@gmail.com", "P@sSword123", "The provided credentials are not correct."},
                 {"192.168.1.1@gmail.com", "P@ssword123", "The provided credentials are not correct."},
                 {"@#$%^#/!><@gmail.com", "P@ssword123", "The provided credentials are not correct."}
         };
