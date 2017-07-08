@@ -36,6 +36,7 @@ public class LoginTest {
     @BeforeMethod
     public void beforeMethod(@Optional("firefox") String BrowserType) throws InterruptedException {
         if (BrowserType.toLowerCase().equals("chrome")) {
+            System.setProperty("webDriver.chrome.driver", "C:\\Windows\\System32\\chromedriver");
             webDriver = new ChromeDriver();
         }
 
