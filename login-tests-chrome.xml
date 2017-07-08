@@ -3,7 +3,7 @@
 <suite name="LoginTests" verbose="1" >
     <test name="LoginTestChrome" >
 
-            <parameter name="browserName" value="chrome"/>
+            <parameter name="BrowserType" value="Chrome"/>
             <classes>
                 <class name="test.LoginTest" />
             </classes>

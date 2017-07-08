@@ -1,6 +1,7 @@
 package test;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
@@ -18,7 +19,6 @@ public class LoginTest {
 
 
     public WebDriver webDriver;
-    LoginPage loginPage;
     /**
      * Username for login field
      */
@@ -28,23 +28,31 @@ public class LoginTest {
      */
     public String password = "P@ssword123";
 
+    @Parameters({"BrowserType"})
 
     /**
      * Opens FireFox browser and navigate to web page
      */
-    @BeforeClass
-    public void beforeClass() throws InterruptedException {
-        webDriver = new FirefoxDriver();
+    @BeforeMethod
+    public void beforeMethod(@Optional("firefox") String BrowserType) throws InterruptedException {
+        if (BrowserType.toLowerCase().equals("chrome")) {
+            webDriver = new ChromeDriver();
+        }
+
+        if (BrowserType.toLowerCase().equals("firefox")) {
+            webDriver = new FirefoxDriver();
+        }
+
         webDriver.navigate().to("https://alerts.shotspotter.biz");
-        LoginPage loginPage = new LoginPage(webDriver);
+
 
     }
 
     /**
      * Kills WebDriver instance
      */
-    @AfterClass
-    public void afterClass() {
+    @AfterMethod
+    public void afterMethod() {
         webDriver.quit();
     }
 
@@ -66,10 +74,9 @@ public class LoginTest {
         return new Object[][]{
                 {"", "", "The provided credentials are not correct."},
                 {" ", " ", "The provided credentials are not correct."},
-                {"sst.tau@gmail.com", "", "The provided credentials are not correct."},
+                {"st.tau@gmail.com", "", "The provided credentials are not correct."},
                 {"sst.taugmail.com", "P@ssword123", "The provided credentials are not correct."},
                 {"sst.tau@ gmail.com", "P@ssword123", "The provided credentials are not correct."},
-                {"sst.tau@gmailcom", " P@Ssword123", "The provided credentials are not correct."},
                 {" sst.tau@gmail.com", "P@sSword123", "The provided credentials are not correct."},
                 {"192.168.1.1@gmail.com", "P@ssword123", "The provided credentials are not correct."},
                 {"@#$%^#/!><@gmail.com", "P@ssword123", "The provided credentials are not correct."}
@@ -81,6 +88,7 @@ public class LoginTest {
      */
     @Test(dataProvider = "negativeTestEnvironment")
     public void testLoginNegative(String username, String password, String expectedErrorMsg) throws InterruptedException {
+        LoginPage loginPage = new LoginPage(webDriver);
         Assert.assertEquals(loginPage.getPageTitle(), "Shotspotter - Login", "Main page title is wrong");
         Assert.assertEquals(loginPage.getPageURL(), "https://alerts.shotspotter.biz/", "Wrong URL on Login Page");
         loginPage = loginPage.login(username, password);
@@ -94,6 +102,7 @@ public class LoginTest {
      */
     @Test
     public void testLogOut() {
+        LoginPage loginPage = new LoginPage(webDriver);
         Assert.assertEquals(loginPage.getPageTitle(), "Shotspotter - Login", "Main page title is wrong");
         Assert.assertEquals(loginPage.getPageURL(), "https://alerts.shotspotter.biz/", "Wrong URL on Login Page");
         MainPage mainPage = loginPage.login(username, password);
