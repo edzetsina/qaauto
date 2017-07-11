@@ -35,12 +35,14 @@ public class LoginTest {
      */
     @BeforeMethod
     public void beforeMethod(@Optional("firefox") String BrowserType) throws InterruptedException {
+
         if (BrowserType.toLowerCase().equals("chrome")) {
-            System.setProperty("webDriver.chrome.driver", "C:\\Windows\\System32\\chromedriver");
+            System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
             webDriver = new ChromeDriver();
         }
 
         if (BrowserType.toLowerCase().equals("firefox")) {
+            System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
             webDriver = new FirefoxDriver();
         }
 

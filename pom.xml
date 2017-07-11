@@ -44,11 +44,11 @@
             <artifactId>testng</artifactId>
             <version>6.11</version>
         </dependency>
-
-
-
     </dependencies>
 
+    <properties>
+                <suiteXmlFile>login-tests-chrome.xml</suiteXmlFile>
+    </properties>
 
 
 </project>
