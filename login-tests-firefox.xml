@@ -1,11 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-        <suite name="LoginTest" verbose="1" >
-        <test name="LoginTestFireFox" >
+<suite name="LoginTest" verbose="1" >
+<test name="LoginTestFireFox" >
 
-            <parameter name="BrowserType" value="Firefox"/>
-            <classes>
-                <class name="test.LoginTest" />
-            </classes>
-        </test>
-    </suite>
+    <parameter name="BrowserType" value="Firefox"/>
+    <classes>
+        <class name="test.LoginTest" />
+    </classes>
+</test>
+</suite>

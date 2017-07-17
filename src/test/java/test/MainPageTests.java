@@ -1,11 +1,16 @@
 package test;
 
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import page.LoginPage;
 import page.MainPage;
+
+import java.util.List;
 
 public class MainPageTests {
 
@@ -17,22 +22,55 @@ public class MainPageTests {
      */
     public String password = "Test123!";
 
-    /**
-     * Opens FireFox browser and navigate to web page
-     */
-    @BeforeClass
-    public void beforeClass() throws InterruptedException {
-        webDriver = new FirefoxDriver();
-        webDriver.navigate().to("https://alerts.shotspotter.biz");
-        LoginPage loginPage = new LoginPage(webDriver);
-        mainPage = loginPage.login(username, password);
-    }
+
     /**
      * Kills WebDriver instance
      */
     @AfterClass
     public void afterClass() {
         webDriver.quit();
+    }
+
+    @Parameters({"BrowserType"})
+
+    /**
+     * Opens FireFox browser and navigate to web page
+     */
+    @BeforeMethod
+    public void beforeMethod(@Optional("firefox") String BrowserType) throws InterruptedException {
+
+        if (BrowserType.toLowerCase().equals("chrome")) {
+            ChromeDriverManager.getInstance().setup();
+            webDriver = new ChromeDriver();
+        }
+
+        if (BrowserType.toLowerCase().equals("firefox")) {
+            FirefoxDriverManager.getInstance().setup();
+            webDriver = new FirefoxDriver();
+        }
+
+        webDriver.navigate().to("https://alerts.shotspotter.biz");
+        LoginPage loginPage = new LoginPage(webDriver);
+        mainPage = loginPage.login(username, password);
+    }
+
+    @Test
+    public void testValidateIncidentCardFields() {
+        mainPage.openIncidentsList();
+        String expectedCity = "Denver";
+        List<String> listCities = mainPage.getIncidentCardsCities();
+        List<String> listStreets = mainPage.getIncidentCardsStreets();
+        List<String> listTimeStamps = mainPage.getIncidentCardsTimeStamps();
+
+        for (String elementCity: listCities) {
+            Assert.assertEquals(elementCity, expectedCity, "City is not Denver");
+        }
+        for (String elementStreet: listStreets) {
+            Assert.assertNotEquals(elementStreet, "", "Street address is empty");
+        }
+        for (String elementTimeStamps: listTimeStamps) {
+            Assert.assertNotEquals(elementTimeStamps, "", "Street address is empty");
+        }
     }
 
     /**
@@ -69,6 +107,13 @@ public class MainPageTests {
         System.out.println("resultsCount: "+resultsCount);
         System.out.println("incidentCardsCount: "+incidentCardsCount);
         Assert.assertEquals(resultsCount, incidentCardsCount, "Results count doesn't match Incident Cards count");
+    }
+
+    @Test
+    public void testTermOfService() {
+        mainPage.about();
+        mainPage.openTermOfServiceWindow();
+        Assert.assertEquals(webDriver.getCurrentUrl(), "https://alerts.shotspotter.biz/main/9720-001037", "Main page URL is wrong");
     }
 
 }

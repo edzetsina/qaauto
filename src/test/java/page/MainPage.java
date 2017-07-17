@@ -6,9 +6,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.Thread.sleep;
 
@@ -41,15 +43,21 @@ public class MainPage extends BasePage {
     private WebElement listButton;
     @FindBy(xpath = "//incident-list//incident-card")
     private List<WebElement> incidentsCardList;
+    @FindBy(xpath = "//li[text()='About']")
+    private WebElement aboutButton;
+    @FindBy(xpath = "//div[@class='modal-body']//a[text()='terms of service']")
+    private WebElement termsOfServiceLink;
+    @FindBy(xpath = "//button[text()='Close']")
+    private WebElement closeAboutWindowButton;
+
 
     private WebElement getTimeFramePeriodOption(int period) {
         return webDriver.findElement(By.xpath(String.format("//filter-menu//div[@class='available-options']//*[@class='time-increment' and text()='%d']", period)));
     }
 
     public int getResultsCount() {
-       return Integer.parseInt(resultsCount.getText().replace(" RESULTS", ""));
+        return Integer.parseInt(resultsCount.getText().replace(" RESULTS", ""));
     }
-
 
 
     /**
@@ -75,6 +83,14 @@ public class MainPage extends BasePage {
         return PageFactory.initElements(webDriver, LoginPage.class);
     }
 
+    public MainPage about() {
+        settingIcon.click();
+        waitUntilElementDisplayed(settingsMenu);
+        waitUntilElementClickable(aboutButton, 5).click();
+        return this;
+    }
+
+
     /**
      * Checks if settingIcon element displayed
      *
@@ -91,17 +107,16 @@ public class MainPage extends BasePage {
         waitResultCountUpdated(5);
     }
 
-    public void waitResultCountUpdated(int maxTimeoutSec){
+    public void waitResultCountUpdated(int maxTimeoutSec) {
         int initialResultCount = getResultsCount();
-        for (int i = 0; i<maxTimeoutSec; i++){
+        for (int i = 0; i < maxTimeoutSec; i++) {
             try {
                 Thread.sleep(1000);
                 int currentResultCount = getResultsCount();
                 if (initialResultCount != currentResultCount) {
-                break;
+                    break;
                 }
-            }
-            catch (InterruptedException ie){
+            } catch (InterruptedException ie) {
             }
         }
     }
@@ -109,6 +124,65 @@ public class MainPage extends BasePage {
     public int getIncidentCardsCount() {
         listButton.click();
         return incidentsCardList.size();
+    }
+
+
+    public void openIncidentsList() {
+        listButton.click();
+        waitUntilElementClickable(incidentsCardList.get(1), 5);
+    }
+
+    public List<String> getIncidentCardsCities() {
+        List<String> listCities = new ArrayList<String>();
+        for (WebElement incidentCard : incidentsCardList) {
+            String cityText = incidentCard.findElement(By.xpath("//div[@class='city S']")).getText();
+            listCities.add(cityText);
+        }
+        return listCities;
+    }
+
+    public List<String> getIncidentCardsStreets() {
+        List<String> listStreets = new ArrayList<String>();
+        for (WebElement incidentCard : incidentsCardList) {
+            String cityText = incidentCard.findElement(By.xpath("//div[@class='address']")).getText();
+            listStreets.add(cityText);
+        }
+        return listStreets;
+    }
+
+    public List<String> getIncidentCardsTimeStamps() {
+        List<String> listTimeStamps = new ArrayList<String>();
+        for (WebElement incidentCard : incidentsCardList) {
+            String cityText = incidentCard.findElement(By.xpath("//div[@class='cell day']//div[@class='content']")).getText();
+            listTimeStamps.add(cityText);
+        }
+        return listTimeStamps;
+    }
+
+    public MainPage openTermOfServiceWindow() {
+        termsOfServiceLink.click();
+
+        String parentWindow = webDriver.getWindowHandle();
+        Set<String> handles = webDriver.getWindowHandles();
+        for (String windowHandle : handles) {
+            if (!windowHandle.equals(parentWindow)) {
+                webDriver.switchTo().window(windowHandle);
+
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Assert.assertEquals(getPageURL(), "http://www.shotspotter.com/apps/tos", "Wrong URL on About Page");
+
+                webDriver.close();
+                webDriver.switchTo().window(parentWindow);
+            }
+
+        }
+        waitUntilElementDisplayed(closeAboutWindowButton).click();
+        return this;
     }
 }
 

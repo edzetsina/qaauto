@@ -95,7 +95,6 @@ public class BasePage {
     public WebElement waitUntilElementClickable(WebElement element, int timeout) {
         WebElement webElement = (new WebDriverWait(webDriver, timeout)).until(ExpectedConditions.elementToBeClickable(element));
         return waitUntilElementDisplayed(webElement, 10);
-
     }
 
 

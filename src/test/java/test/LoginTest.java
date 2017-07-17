@@ -1,5 +1,7 @@
 package test;
 
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -37,12 +39,14 @@ public class LoginTest {
     public void beforeMethod(@Optional("firefox") String BrowserType) throws InterruptedException {
 
         if (BrowserType.toLowerCase().equals("chrome")) {
-            System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
+            ChromeDriverManager.getInstance().setup();
+           // System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
             webDriver = new ChromeDriver();
         }
 
         if (BrowserType.toLowerCase().equals("firefox")) {
-            System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
+            FirefoxDriverManager.getInstance().setup();
+            //System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
             webDriver = new FirefoxDriver();
         }
 
