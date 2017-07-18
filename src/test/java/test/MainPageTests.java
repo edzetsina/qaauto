@@ -56,11 +56,13 @@ public class MainPageTests {
 
     @Test
     public void testValidateIncidentCardFields() {
-        mainPage.openIncidentsList();
         String expectedCity = "Denver";
-        List<String> listCities = mainPage.getIncidentCardsCities();
-        List<String> listStreets = mainPage.getIncidentCardsStreets();
-        List<String> listTimeStamps = mainPage.getIncidentCardsTimeStamps();
+        mainPage.switchTimeFramePeriod(7);
+        mainPage.openIncidentsList();
+
+        List<String> listCities = mainPage.getIncidentCardsDetails("Cities");
+        List<String> listStreets = mainPage.getIncidentCardsDetails("Streets");
+        List<String> listTimeStamps = mainPage.getIncidentCardsDetails("TimeStamps");
 
         for (String elementCity: listCities) {
             Assert.assertEquals(elementCity, expectedCity, "City is not Denver");
@@ -72,6 +74,14 @@ public class MainPageTests {
             Assert.assertNotEquals(elementTimeStamps, "", "Street address is empty");
         }
     }
+
+    @Test
+    public void testIncidentCardsDetailsData() {
+        Assert.assertFalse(mainPage.isAddressesListContainsEmptyStrings(), "Addresses list contains empty strings" );
+        Assert.assertTrue(mainPage.isAllCitiesEqualsTo("Denver"), "Not all cities are Denver" );
+        Assert.assertTrue(mainPage.isTimeListContainsUniqueElements(), "Elements of timeList are not unique" );
+    }
+
 
     /**
      * Positive login test with correct credentials
@@ -113,7 +123,7 @@ public class MainPageTests {
     public void testTermOfService() {
         mainPage.about();
         mainPage.openTermOfServiceWindow();
-        Assert.assertEquals(webDriver.getCurrentUrl(), "https://alerts.shotspotter.biz/main/9720-001037", "Main page URL is wrong");
+        Assert.assertEquals(webDriver.getCurrentUrl(), "https://alerts.shotspotter.biz/main", "Main page URL is wrong");
     }
 
 }

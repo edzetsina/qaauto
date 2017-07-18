@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -49,6 +50,12 @@ public class MainPage extends BasePage {
     private WebElement termsOfServiceLink;
     @FindBy(xpath = "//button[text()='Close']")
     private WebElement closeAboutWindowButton;
+    @FindBy(xpath = "//incident-list//incident-card//div[contains(@class, 'incident')]//div[@class='cell day']//div[@class='content']")
+    private List<WebElement> timeList;
+    @FindBy(xpath = "//incident-list//incident-card//div[contains(@class, 'incident')]//div[@class='city S']")
+    private List<WebElement> citiesList;
+    @FindBy(xpath = "//incident-list//incident-card//div[contains(@class, 'incident')]//div[@class='address']")
+    private List<WebElement> addressesList;
 
 
     private WebElement getTimeFramePeriodOption(int period) {
@@ -132,31 +139,27 @@ public class MainPage extends BasePage {
         waitUntilElementClickable(incidentsCardList.get(1), 5);
     }
 
-    public List<String> getIncidentCardsCities() {
-        List<String> listCities = new ArrayList<String>();
-        for (WebElement incidentCard : incidentsCardList) {
-            String cityText = incidentCard.findElement(By.xpath("//div[@class='city S']")).getText();
-            listCities.add(cityText);
+    public List<String> getIncidentCardsDetails(String details) {
+        List<String> listDetails = new ArrayList<>();
+        String elementXpath = getCardsDetailsElementXpath(details);
+        for (WebElement cardsElement: incidentsCardList) {
+            String cardsElementText = cardsElement.findElement(By.xpath(elementXpath)).getText();
+            listDetails.add(cardsElementText);
         }
-        return listCities;
+        return listDetails;
     }
 
-    public List<String> getIncidentCardsStreets() {
-        List<String> listStreets = new ArrayList<String>();
-        for (WebElement incidentCard : incidentsCardList) {
-            String cityText = incidentCard.findElement(By.xpath("//div[@class='address']")).getText();
-            listStreets.add(cityText);
+    public String getCardsDetailsElementXpath(String details) {
+        switch (details.toLowerCase()) {
+            case "cities":
+                return "//div[@class='city S']";
+            case "streets":
+                return "//div[@class='address']";
+            case "timestamps":
+                return "//div[@class='cell day']//div[@class='content']";
+            default:
+                return "";
         }
-        return listStreets;
-    }
-
-    public List<String> getIncidentCardsTimeStamps() {
-        List<String> listTimeStamps = new ArrayList<String>();
-        for (WebElement incidentCard : incidentsCardList) {
-            String cityText = incidentCard.findElement(By.xpath("//div[@class='cell day']//div[@class='content']")).getText();
-            listTimeStamps.add(cityText);
-        }
-        return listTimeStamps;
     }
 
     public MainPage openTermOfServiceWindow() {
@@ -168,11 +171,8 @@ public class MainPage extends BasePage {
             if (!windowHandle.equals(parentWindow)) {
                 webDriver.switchTo().window(windowHandle);
 
-                try {
-                    sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                AboutPage aboutPage = new AboutPage(webDriver);
+                aboutPage.isAboutPageLoaded();
 
                 Assert.assertEquals(getPageURL(), "http://www.shotspotter.com/apps/tos", "Wrong URL on About Page");
 
@@ -183,6 +183,42 @@ public class MainPage extends BasePage {
         }
         waitUntilElementDisplayed(closeAboutWindowButton).click();
         return this;
+    }
+
+    public boolean isTimeListContainsUniqueElements() {
+
+        List<String> timeTextList = new ArrayList<>();
+
+        for (WebElement timeElement : timeList) {
+            timeTextList.add(timeElement.getText());
+        }
+
+        Set<String> timeTextUnique = new HashSet<String>(timeTextList);
+
+        if (timeTextUnique.size() == timeTextList.size()) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public boolean isAllCitiesEqualsTo(String cityText) {
+        for (WebElement city : citiesList) {
+            if (!city.getText().equalsIgnoreCase(cityText)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isAddressesListContainsEmptyStrings() {
+        for (WebElement address : addressesList) {
+            if (address.getText().equalsIgnoreCase("")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
