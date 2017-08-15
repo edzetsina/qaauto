@@ -40,13 +40,11 @@ public class LoginTest {
 
         if (BrowserType.toLowerCase().equals("chrome")) {
             ChromeDriverManager.getInstance().setup();
-           // System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
             webDriver = new ChromeDriver();
         }
 
         if (BrowserType.toLowerCase().equals("firefox")) {
             FirefoxDriverManager.getInstance().setup();
-            //System.setProperty("webdriver.gecko.driver", "src/test/resources/geckodriver.exe");
             webDriver = new FirefoxDriver();
         }
 

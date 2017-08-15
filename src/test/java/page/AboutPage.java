@@ -10,14 +10,26 @@ import org.openqa.selenium.support.PageFactory;
  */
 public class AboutPage extends BasePage {
 
+    /**
+     * Identifying term of service text
+     */
     @FindBy(xpath = "//*[@class='entry']")
     private WebElement termOfServiceText;
 
+    /**
+     * About page constructor
+     *
+     * @param webDriver WebDriver instance
+     */
     public AboutPage(WebDriver webDriver) {
         super(webDriver);
         PageFactory.initElements(webDriver, this);
     }
 
+    /**
+     * Method which checked is the AboutPage loaded
+     * @return About page
+     */
     public AboutPage isAboutPageLoaded() {
         waitUntilElementDisplayed(termOfServiceText);
 
